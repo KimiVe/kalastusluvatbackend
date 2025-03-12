@@ -54,3 +54,15 @@ app.post("/login", (req, res) => {
         res.json({ message: "Login successful!", user: results[0] });
     });
 });
+
+
+
+app.get("/users", (req, res) => {
+    db.query("SELECT * FROM users", (err, results) => {
+        if (err) {
+            console.error("Error fetching users:", err);
+            return res.status(500).json({ error: "Database query failed" });
+        }
+        res.json(results);
+    });
+});
