@@ -1,11 +1,10 @@
 require("dotenv").config();
 const express = require("express");
 const mysql = require("mysql2");
-const cors = require("cors");
 const urldb = 'mysql://root:mKGXwSOJLDMHFkQfaFxkjtGSBjMvTaEJ@mysql.railway.internal:3306/railway'
 const app = express();
 app.use(express.json());
-app.use(cors());
+
 
 const connection = mysql.createConnection({
     urldb
