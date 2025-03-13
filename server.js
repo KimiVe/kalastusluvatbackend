@@ -35,7 +35,7 @@ app.listen(3000, () => {
 app.post("/register", (req, res) => {
     const { username, password, full_name, email, address } = req.body;
 
-    const query = `INSERT INTO Customers (username, password, full_name, email, address) VALUES (?, ?, ?, ?, ?)`;
+    const query = `INSERT INTO customers (username, password, full_name, email, address) VALUES (?, ?, ?, ?, ?)`;
     connection.query(query, [username, password, full_name, email, address], (err, result) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ message: "User registered successfully!" });
@@ -47,7 +47,7 @@ app.post("/register", (req, res) => {
 
 app.post("/login", (req, res) => {
     const { username, password } = req.body;
-    const query = `SELECT * FROM Customers WHERE username = ? AND password = ?`;
+    const query = `SELECT * FROM customers WHERE username = ? AND password = ?`;
 
     connection.query(query, [username, password], (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -61,7 +61,7 @@ app.post("/login", (req, res) => {
 
 
 app.get("/users", (req, res) => {
-    connection.query("SELECT * FROM users", (err, results) => {
+    connection.query("SELECT * FROM customers", (err, results) => {
         if (err) {
             console.error("Error fetching users:", err);
             return res.status(500).json({ error: "Database query failed" });
