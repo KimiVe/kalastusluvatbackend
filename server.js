@@ -1,13 +1,15 @@
 require("dotenv").config();
 const express = require("express");
 const mysql = require("mysql2");
-const urldb = 'mysql://root:mKGXwSOJLDMHFkQfaFxkjtGSBjMvTaEJ@mysql.railway.internal:3306/railway'
-const app = express();
 app.use(express.json());
 
 
 const connection = mysql.createConnection({
-    urldb
+    host: process.env.MYSQLHOST, // Use Railway variable
+    user: process.env.MYSQLUSER,
+    password: process.env.MYSQLPASSWORD,
+    database: process.env.MYSQLDATABASE,
+    port: process.env.MYSQLPORT
 });
 
 connection.connect((err) => {
