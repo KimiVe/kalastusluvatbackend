@@ -2,7 +2,15 @@ require("dotenv").config();
 const express = require("express");
 const mysql = require("mysql2");
 const app = express();
+const cors = require("cors")
+
 app.use(express.json());
+
+app.use(cors({
+    origin: "https://kalastusluvat.vercel.app/", 
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type,Authorization"
+}));
 
 
 const connection = mysql.createConnection({
