@@ -7,19 +7,21 @@ const cors = require("cors")
 app.use(express.json());
 
 app.use(cors({
-    origin: "https://kalastusluvat.vercel.app", 
-    methods: "GET,POST,PUT,DELETE",
-    allowedHeaders: "Content-Type,Authorization"
+    origin: ["https://kalastusluvat.vercel.app", "http://localhost:5173", "http://localhost:5174"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 
-const connection = mysql.createConnection({
-    host: process.env.MYSQLHOST, // Use Railway variable
-    user: process.env.MYSQLUSER,
-    password: process.env.MYSQLPASSWORD,
-    database: process.env.MYSQLDATABASE,
-    port: process.env.MYSQLPORT
+const connection = mysql.createConnection({                 
+    host: process.env.DB_HOST ,         
+    user: process.env.DB_USER ,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE ,
+    port: process.env.PORT 
 });
+
 
 connection.connect((err) => {
     if (err) {
@@ -40,12 +42,28 @@ app.listen(3000, () => {
 
 // Rekistering
 
-app.post("/register", (req, res) => {
-    const { username, password, full_name, email, address } = req.body;
+app.post("/kauttajatiedot", (req, res) => {
+    console.log("Registration request received:", req.body);
+    const { username, email, password } = req.body;
+    
+    if (!username || !password || !email) {
+        console.log("Missing fields:", { username, email, password });
+        return res.status(400).json({ error: "All fields are required" });
+    }
 
-    const query = `INSERT INTO customers (username, password, full_name, email, address) VALUES (?, ?, ?, ?, ?)`;
-    connection.query(query, [username, password, full_name, email, address], (err, result) => {
-        if (err) return res.status(500).json({ error: err.message });
+    // Fixed VALUES clause to have exactly 3 placeholders
+    const query = `INSERT INTO kauttajatiedot (username, email, password) VALUES (?, ?, ?)`;
+    
+    connection.query(query, [username, email, password], (err, result) => {
+        if (err) {
+            console.error("Registration error:", err);
+            return res.status(500).json({ 
+                error: err.message,
+                code: err.code,
+                state: err.sqlState
+            });
+        }
+        console.log("User registered successfully:", username);
         res.json({ message: "User registered successfully!" });
     });
 });
@@ -55,7 +73,7 @@ app.post("/register", (req, res) => {
 
 app.post("/login", (req, res) => {
     const { username, password } = req.body;
-    const query = `SELECT * FROM customers WHERE username = ? AND password = ?`;
+    const query = `SELECT * FROM kauttajatiedot WHERE username = ? AND password = ?`;
 
     connection.query(query, [username, password], (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -68,10 +86,10 @@ app.post("/login", (req, res) => {
 
 
 
-app.get("/users", (req, res) => {
-    connection.query("SELECT * FROM customers", (err, results) => {
+app.get("/kauttajatiedot", (req, res) => {
+    connection.query("SELECT * FROM kauttajatiedot", (err, results) => {
         if (err) {
-            console.error("Error fetching users:", err);
+            console.error("Error fetching kauttajatiedot:", err);
             return res.status(500).json({ error: "Database query failed" });
         }
         res.json(results);
