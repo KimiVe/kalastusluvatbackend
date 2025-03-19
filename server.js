@@ -14,7 +14,7 @@ app.use(cors({
 
 
 const connection = mysql.createConnection({
-    host: process.env.MYSQLHOST, // Use Railway variable
+    host: process.env.MYSQLHOST, 
     user: process.env.MYSQLUSER,
     password: process.env.MYSQLPASSWORD,
     database: process.env.MYSQLDATABASE,
@@ -77,3 +77,13 @@ app.get("/users", (req, res) => {
         res.json(results);
     });
 });
+
+
+app.get("/licences", (req, res) => {  connection.query("SELECT * FROM luvat", (err, results) => {
+    if (err) {
+        console.log("Error fetching licences: ", err)
+        return res.status(500).json({error: 'Database query failed'})
+    }
+    res.json(results)
+})
+})
