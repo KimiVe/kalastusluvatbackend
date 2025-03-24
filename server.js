@@ -50,7 +50,7 @@ app.post("/register", (req, res) => {
     }
 
     // Fixed VALUES clause to have exactly 3 placeholders
-    const query = `INSERT INTO kauttajatiedot (username, email, password) VALUES (?, ?, ?)`;
+    const query = `INSERT INTO customers (username, email, password) VALUES (?, ?, ?)`;
     
     connection.query(query, [username, email, password], (err, result) => {
         if (err) {
