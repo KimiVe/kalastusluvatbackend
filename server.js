@@ -49,8 +49,7 @@ app.post("/register", (req, res) => {
         return res.status(400).json({ error: "All fields are required" });
     }
 
-    // Fixed VALUES clause to have exactly 3 placeholders
-    const query = `INSERT INTO customers (username, email, password) VALUES (?, ?, ?)`;
+    const query = `INSERT INTO customers (username, email, fullname, password, address, phone) VALUES (?, ?, ?, ?, ?, ?)`;
     
     connection.query(query, [username, email, password], (err, result) => {
         if (err) {
