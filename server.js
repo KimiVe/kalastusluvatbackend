@@ -42,16 +42,17 @@ app.listen(3000, () => {
 
 app.post("/register", (req, res) => {
     console.log("Registration request received:", req.body);
-    const { username, email, password } = req.body;
     
-    if (!username || !password || !email) {
-        console.log("Missing fields:", { username, email, password });
+    const { username, email, fullname, password, address, phone } = req.body; 
+
+    if (!username || !email || !fullname || !password || !address || !phone) {
+        console.log("Missing fields:", { username, email, fullname, password, address, phone });
         return res.status(400).json({ error: "All fields are required" });
     }
 
     const query = `INSERT INTO customers (username, email, fullname, password, address, phone) VALUES (?, ?, ?, ?, ?, ?)`;
-    
-    connection.query(query, [username, email, password], (err, result) => {
+
+    connection.query(query, [username, email, fullname, password, address, phone], (err, result) => {
         if (err) {
             console.error("Registration error:", err);
             return res.status(500).json({ 
@@ -64,6 +65,7 @@ app.post("/register", (req, res) => {
         res.json({ message: "User registered successfully!" });
     });
 });
+
 
 
 
